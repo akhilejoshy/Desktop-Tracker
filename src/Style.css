@@ -1,0 +1,163 @@
+/* Fonts */
+.font-body {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-headline {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-code {
+  font-family: monospace;
+}
+
+/* Background & text colors */
+.bg-background {
+  background-color: #F8F9FD;
+}
+
+.text-foreground {
+  color: #2B318A;
+}
+
+/* Card colors */
+.bg-card {
+  background-color: #FFFFFF;
+}
+
+.text-card-foreground {
+  color: #000000;
+}
+
+/* Popover colors */
+.bg-popover {
+  background-color: #FFFFFF;
+}
+
+.text-popover-foreground {
+  color: #000000;
+}
+
+/* Primary colors */
+.bg-primary {
+  background-color: #5A81FA;
+}
+
+.text-primary-foreground {
+  color: #FFFFFF;
+}
+
+/* Secondary colors */
+.bg-secondary {
+  background-color: #2B318A;
+}
+
+.text-secondary-foreground {
+  color: #FFFFFF;
+}
+
+/* Muted colors */
+.bg-muted {
+  background-color: #626674;
+}
+
+.text-muted-foreground {
+  color: #6A6E83;
+}
+
+/* Accent colors */
+.bg-accent {
+  background-color:#5A81FA;
+}
+
+.text-accent-foreground {
+  color: #FFFFFF;
+}
+
+/* Destructive colors */
+.bg-destructive {
+  background-color: #FF4D4F;
+}
+
+.text-destructive-foreground {
+  color: #FFFFFF;
+}
+
+/* Borders & Inputs */
+.border-color {
+  border-color: #CDDEFF;
+}
+
+.bg-input {
+  background-color: #FFFFFF;
+}
+
+
+
+
+.input-shadow {
+  box-shadow: 0 0 12px 2px rgba(23, 38, 82, 0.35) !important;
+  border: none !important;
+  outline: none !important;
+  background-color: #fff;
+  transition: box-shadow 0.2s ease;
+}
+
+.input-dropdown {
+  border: none !important;
+  outline: none !important;
+  background-color: #fff;
+
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.rounded-sm {
+  border-radius: 0.25rem;
+}
+
+.text-primary {
+  color: #5A81FA;
+}
+
+.text-muted-foreground {
+  color: #6A6E83;
+}
+
+.card-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+
+  to {
+    height: 0;
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
