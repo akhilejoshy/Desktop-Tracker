@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+/* src/styles/globals.css */
+
+/* Base colors */
+:root {
+  --background: 0 0% 100%;           /* white */
+  --foreground: 222 47% 11%;         /* dark text */
+  
+  --card: 0 0% 100%;                  /* card background */
+  --card-foreground: 222 47% 11%;    /* card text */
+
+  --popover: 0 0% 100%;               /* popover background */
+  --popover-foreground: 222 47% 11%;  /* popover text */
+
+  --primary: 220 90% 56%;             /* blue */
+  --primary-foreground: 0 0% 100%;   /* white text on primary */
+
+  --secondary: 240 20% 60%;           /* light blue/gray */
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 210 16% 82%;               /* gray */
+  --muted-foreground: 215 20% 30%;
+
+  --accent: 340 82% 52%;              /* pink/red accent */
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 75% 60%;           /* red */
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 215 20% 90%;              /* light border */
+  --input: 0 0% 95%;                  /* input background */
+  --ring: 220 90% 56%;                /* ring/focus */
+  
+  /* radius */
+  --radius: 0.5rem;
+}
+
+/* Optional: dark mode overrides */
+.dark {
+  --background: 222 47% 11%;
+  --foreground: 0 0% 100%;
+
+  --card: 222 47% 11%;
+  --card-foreground: 0 0% 100%;
+
+  --popover: 222 47% 11%;
+  --popover-foreground: 0 0% 100%;
+
+  --primary: 220 90% 56%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 240 20% 60%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 215 20% 30%;
+  --muted-foreground: 210 16% 82%;
+
+  --accent: 340 82% 52%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 75% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 215 20% 30%;
+  --input: 222 47% 11%;
+  --ring: 220 90% 56%;
+}
