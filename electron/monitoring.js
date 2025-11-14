@@ -1,4 +1,4 @@
-import { ipcMain, desktopCapturer, Notification } from 'electron';
+import { ipcMain, desktopCapturer, Notification, BrowserWindow } from 'electron';
 import { getAndResetActivityCounts, activateMonitoring, deactivateMonitoring } from './activityMonitor.js';
 import { IPC_CHANNELS } from './constants.js';
 import { exec } from 'child_process';
@@ -68,6 +68,15 @@ const showScreenshotNotification = () => {
         body: 'A screenshot has been successfully taken.',
         silent: false,
         icon: './icon.ico',
+    });
+
+    notification.on('click', () => {
+        const win = BrowserWindow.getAllWindows()[0]; 
+        if (win) {
+            if (win.isMinimized()) win.restore();
+            win.show();
+            win.focus();
+        }
     });
 
     notification.show();
