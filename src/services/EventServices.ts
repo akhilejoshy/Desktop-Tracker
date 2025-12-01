@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 
-const apiUrl = "http://192.168.0.136:8080"
+const apiUrl = "https://dev-api.cloudhousetechnologies.com"
 
 const ApiClient: AxiosInstance = axios.create({
   baseURL: apiUrl,

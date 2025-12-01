@@ -1,8 +1,8 @@
 {
   "name": "cloudhouse",
   "private": true,
-  "version": "0.0.0",
-  "author": "Susmitha <susmitha@cloudstick.io>",
+  "version": "0.1.0",
+  "author": "CloudHouse Technologies <cloudhouse@cloudstick.io>",
   "type": "module",
   "main": "electron/app.js",
   "scripts": {
@@ -11,7 +11,9 @@
     "start-react": "npm run dev",
     "start-electron": "wait-on tcp:5173 && cross-env ELECTRON_START_URL=http://localhost:5173 electron --no-sandbox --disable-gpu --ozone-platform=x11 electron/app.js",
     "build-react": "vite build",
-    "dist": "npm run build-react && electron-builder"
+    "dist": "npm run build-react && electron-builder",
+    "upload": "node scripts/upload.js",
+    "release": "npm run dist && npm run upload"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.3",
@@ -36,8 +38,10 @@
     "@radix-ui/react-toast": "^1.2.6",
     "@radix-ui/react-tooltip": "^1.1.8",
     "@reduxjs/toolkit": "^2.9.2",
+    "aws-sdk": "^2.1692.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "electron-updater": "^6.6.2",
     "lucide-react": "^0.545.0",
     "node-global-key-listener": "^0.3.0",
     "react": "^19.1.1",
@@ -75,6 +79,10 @@
   "build": {
     "appId": "com.myapp.agent",
     "productName": "CloudHouse Agent",
+    "publish": {
+      "provider": "generic",
+      "url": "https://cloudhouse.in-maa-1.linodeobjects.com/agent-application/"
+    },
     "files": [
       "electron/**/*",
       "node_modules/**/*",
@@ -84,12 +92,16 @@
       "icon.icns",
       "!**/node-global-key-listener/bin/MacKeyServer"
     ],
+    "directories": {
+      "output": "dist"
+    },
     "win": {
       "target": "nsis",
       "icon": "icon.ico"
     },
-    "directories": {
-      "output": "dist"
+    "mac": {
+      "target": "dmg",
+      "icon": "icon.icns"
     },
     "linux": {
       "target": [
@@ -103,9 +115,6 @@
       "depends": [
         "scrot"
       ]
-    },
-    "mac": {
-      "icon": "icon.icns"
     }
   }
 }
