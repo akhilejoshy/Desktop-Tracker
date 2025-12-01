@@ -1,8 +1,8 @@
 {
   "name": "cloudhouse",
   "private": true,
-  "version": "0.1.1",
-  "author": "Susmitha <susmitha@cloudstick.io>",
+  "version": "0.1.0",
+  "author": "CloudHouse Technologies <cloudhouse@cloudstick.io>",
   "type": "module",
   "main": "electron/app.js",
   "scripts": {
@@ -81,7 +81,7 @@
     "productName": "CloudHouse Agent",
     "publish": {
       "provider": "generic",
-      "url": "https://cloudhouse.ap-south-1.linodeobjects.com/agent-application/"
+      "url": "https://cloudhouse.in-maa-1.linodeobjects.com/agent-application/"
     },
     "files": [
       "electron/**/*",

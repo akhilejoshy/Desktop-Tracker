@@ -83,7 +83,7 @@ export default function LoginPage() {
                 className="h-15 w-auto object-contain"
               />
             </div>
-            <CardTitle className="text-2xl font-bold text-primary">CloudHouse Agent 2</CardTitle>
+            <CardTitle className="text-2xl font-bold text-primary">CloudHouse Agent</CardTitle>
             <CardDescription>Sign in to start your session</CardDescription>
           </div>
           <form onSubmit={handleLogin} className="flex flex-1 flex-col">

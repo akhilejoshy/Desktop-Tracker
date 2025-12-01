@@ -1,6 +1,8 @@
 import { BrowserWindow, ipcMain, shell, screen, dialog } from 'electron';
 import path from 'path';
 import { WINDOW_CONFIG } from './constants.js';
+import { isQuitingForUpdate } from './state.js';
+
 
 let win = null;
 
@@ -32,8 +34,10 @@ export function createMainWindow(currentDir) {
         },
     });
     win.on('close', (event) => {
+        if (isQuitingForUpdate) {
+            return;
+        }
         event.preventDefault();
-
         const choice = dialog.showMessageBoxSync(win, {
             type: 'question',
             buttons: ['Cancel', 'Yes, Exit'],
@@ -41,9 +45,8 @@ export function createMainWindow(currentDir) {
             cancelId: 0,
             title: 'CloudHouse Agent - Confirm Exit',
             message: 'Are you sure you want to exit CloudHouse Agent?',
-            icon: path.join(currentDir,'..', 'icon.png')   // <-- Add your icon here
+            icon: path.join(currentDir, '..', 'icon.png')  
         });
-
         if (choice === 1) {
             win.destroy();
         }
