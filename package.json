@@ -1,8 +1,10 @@
 {
   "name": "cloudhouse",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.3",
   "author": "CloudHouse Technologies <cloudhouse@cloudstick.io>",
+  "description": "CloudHouse Agent for automation and system monitoring",
+  "homepage": "https://api.cloudhousetechnologies.com",
   "type": "module",
   "main": "electron/app.js",
   "scripts": {

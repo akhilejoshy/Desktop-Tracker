@@ -2,6 +2,7 @@ import { BrowserWindow, ipcMain, shell, screen, dialog } from 'electron';
 import path from 'path';
 import { WINDOW_CONFIG } from './constants.js';
 import { isQuitingForUpdate } from './state.js';
+import { getIsMonitoring } from './activityMonitor.js';
 
 
 let win = null;
@@ -37,6 +38,19 @@ export function createMainWindow(currentDir) {
         if (isQuitingForUpdate) {
             return;
         }
+        if (getIsMonitoring()) {
+            event.preventDefault();
+            dialog.showMessageBoxSync(win, {
+                type: 'warning',
+                buttons: ['OK'],
+                defaultId: 0,
+                title: 'Monitoring Active',
+                message: 'Monitoring is currently running.\nStop monitoring before exiting the application.',
+                icon: path.join(currentDir, '..', 'icon.png')
+            });
+            return;
+        }
+
         event.preventDefault();
         const choice = dialog.showMessageBoxSync(win, {
             type: 'question',
@@ -45,7 +59,7 @@ export function createMainWindow(currentDir) {
             cancelId: 0,
             title: 'CloudHouse Agent - Confirm Exit',
             message: 'Are you sure you want to exit CloudHouse Agent?',
-            icon: path.join(currentDir, '..', 'icon.png')  
+            icon: path.join(currentDir, '..', 'icon.png')
         });
         if (choice === 1) {
             win.destroy();

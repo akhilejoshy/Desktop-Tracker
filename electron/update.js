@@ -1,11 +1,13 @@
 // update.js
 import { setQuitForUpdate, setLatestVersion, latestVersion } from './state.js';
-import { ipcMain, BrowserWindow, app,dialog } from 'electron';
+import { ipcMain, BrowserWindow, app, dialog } from 'electron';
+import { getIsMonitoring } from './activityMonitor.js';
+import path from 'path';
 import pkg from 'electron-updater';
 const { autoUpdater } = pkg;
 
 export function setupAutoUpdater(currentDir) {
-  autoUpdater.autoDownload = false; 
+  autoUpdater.autoDownload = false;
 
   autoUpdater.on('checking-for-update', () => {
     BrowserWindow.getAllWindows().forEach(win =>
@@ -66,6 +68,16 @@ export function setupAutoUpdater(currentDir) {
 
   ipcMain.handle('install-update', async () => {
     const win = BrowserWindow.getAllWindows()[0];
+    if (getIsMonitoring()) {
+      await dialog.showMessageBox(win, {
+        type: 'warning',
+        title: 'Monitoring Active',
+        message: 'Monitoring is currently running.\nStop monitoring before installing updates.',
+        buttons: ['OK'],
+        icon: path.join(currentDir, '..', 'icon.png')
+      });
+      return { blocked: true };
+    }
 
     const versionText = latestVersion ? ` (v${latestVersion})` : '';
 
