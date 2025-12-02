@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card,  CardHeader, CardDescription, CardTitle } from "../components/ui/card";
+import { Card, CardHeader, CardDescription, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
@@ -56,7 +56,8 @@ export default function DashboardPage() {
 			p.tasks.some((t) => t.id === Number(selectedTaskId))
 		);
 		const task = project?.tasks.find((t) => t.id === Number(selectedTaskId));
-		return task ? task.subtasks.filter((st) => st.assigned) : [];
+		const subtasks = task?.subtasks ?? [];
+		return subtasks.filter((st) => st.assigned);
 	}, [projectsData, selectedTaskId]);
 
 	const selectedSubtask = useMemo(() => {
@@ -119,6 +120,9 @@ export default function DashboardPage() {
 			(st) => st.taskId === taskId && st.assigned
 		).length;
 	};
+	const hasSubtasks = filteredSubtasks && filteredSubtasks.length > 0;
+	const hasProjects = projectsData && projectsData.length > 0;
+	const hasTasks = filteredTasks && filteredTasks.length > 0;
 
 	return (
 		<div className="space-y-6 flex flex-col h-full ">
@@ -135,20 +139,31 @@ export default function DashboardPage() {
 							setSelectedTaskId(undefined);
 							setSelectedSubtaskId(undefined);
 						}}
+						disabled={!hasProjects}
 					>
 						<SelectTrigger id="project-select">
-							<SelectValue placeholder="Select a project" />
+							<SelectValue
+								placeholder={
+									hasProjects ? "Select a project" : "No projects available"
+								}
+							/>
 						</SelectTrigger>
-						<SelectContent>
-							{projectsData?.map((project) => (
-								<SelectItem
-									key={project.id}
-									value={project.id.toString()}
-								>
-									{project.project_name} ({getAssignedSubtaskCountForProject(project.id.toString())} assigned)
-								</SelectItem>
-							))}
-						</SelectContent>
+						{hasProjects && (
+							<SelectContent>
+								{projectsData.map((project) => (
+									<SelectItem
+										key={project.id}
+										value={project.id.toString()}
+									>
+										{project.project_name} (
+										{getAssignedSubtaskCountForProject(
+											project.id.toString()
+										)}{" "}
+										assigned)
+									</SelectItem>
+								))}
+							</SelectContent>
+						)}
 					</Select>
 				</div>
 				<div className="space-y-2">
@@ -159,18 +174,20 @@ export default function DashboardPage() {
 							setSelectedTaskId(value);
 							setSelectedSubtaskId(undefined);
 						}}
-						disabled={!selectedProjectId}
+						disabled={!hasTasks}
 					>
 						<SelectTrigger id="task-select">
 							<SelectValue placeholder="Select a task" />
 						</SelectTrigger>
-						<SelectContent>
-							{(filteredTasks ?? []).map((task) => (
-								<SelectItem key={task.id} value={task.id.toString()}>
-									{task.name} ({getAssignedSubtaskCountForTask(task.id)} assigned)
-								</SelectItem>
-							))}
-						</SelectContent>
+						{hasTasks && (
+							<SelectContent>
+								{filteredTasks.map((task) => (
+									<SelectItem key={task.id} value={task.id.toString()}>
+										{task.name} ({getAssignedSubtaskCountForTask(task.id)} assigned)
+									</SelectItem>
+								))}
+							</SelectContent>
+						)}
 					</Select>
 				</div>
 				<div className="space-y-2">
@@ -178,18 +195,20 @@ export default function DashboardPage() {
 					<Select
 						value={selectedSubtaskId?.toString()}
 						onValueChange={(value) => setSelectedSubtaskId(value)}
-						disabled={!selectedTaskId}
+						disabled={!hasSubtasks}
 					>
 						<SelectTrigger id="subtask-select">
 							<SelectValue placeholder="Select a subtask" />
 						</SelectTrigger>
-						<SelectContent>
-							{(filteredSubtasks ?? []).map((subtask) => (
-								<SelectItem key={subtask.id} value={subtask.id.toString()}>
-									{subtask.name}
-								</SelectItem>
-							))}
-						</SelectContent>
+						{hasSubtasks && (
+							<SelectContent>
+								{filteredSubtasks.map((subtask) => (
+									<SelectItem key={subtask.id} value={subtask.id.toString()}>
+										{subtask.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						)}
 					</Select>
 				</div>
 			</div>

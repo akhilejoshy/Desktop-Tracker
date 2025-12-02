@@ -20,6 +20,7 @@ let lastMousePos = { x: 0, y: 0 };
 let mouseMovementPoll = null;
 let activityCounts = { ...initialActivityCounts };
 let isMonitoring = false;
+export const getIsMonitoring = () => isMonitoring;
 const globalKeyListener = new GlobalKeyListenerConstructor();
 const startGlobalActivityListeners = () => {
     globalKeyListener.addListener((e) => {

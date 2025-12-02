@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { LogOut } from "lucide-react";
 import { useMonitoring } from "@/contexts/MonitoringContext";
+import { useNavigate } from "react-router-dom";
 import { useTime } from "@/contexts/TimeContext";
 import { useDispatch } from "react-redux";
 import { punchinClear } from "@/store/slices/taskSlice";
@@ -17,6 +18,7 @@ interface UpdateInfo {
 }
 
 const Footer: React.FC = () => {
+  const navigate = useNavigate();
   const subtaskId = localStorage.getItem("subtaskId");
   const taskActivityId = Number(localStorage.getItem("taskActivityId"));
   const workDiaryID = Number(localStorage.getItem("workDiaryID"));
@@ -116,9 +118,8 @@ const Footer: React.FC = () => {
     }
   };
 
-  const handleLogout = () => {
-    dispatch(punchinClear());
-
+const handleLogout = () => {
+    dispatch(punchinClear())
     if (isTimerRunning) {
       stopTimer();
       if (subtaskId && taskActivityId && workDiaryID) {
@@ -126,7 +127,8 @@ const Footer: React.FC = () => {
       }
     }
     setTotalWorkSeconds(0);
-    dispatch(logout());
+    dispatch(logout())
+    navigate("/");
   };
 
   const renderUpdateIcon = () => {
