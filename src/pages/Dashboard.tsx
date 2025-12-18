@@ -141,7 +141,7 @@ export default function DashboardPage() {
 						}}
 						disabled={!hasProjects}
 					>
-						<SelectTrigger id="project-select">
+						<SelectTrigger id="project-select" className="border-0 shadow-sm shadow-black/60 rounded-md">
 							<SelectValue
 								placeholder={
 									hasProjects ? "Select a project" : "No projects available"
@@ -149,8 +149,10 @@ export default function DashboardPage() {
 							/>
 						</SelectTrigger>
 						{hasProjects && (
-							<SelectContent>
-								{projectsData.map((project) => (
+							<SelectContent className="border-0 shadow-lg shadow-black/60 rounded-md max-h-45 max-w-[90vw] overflow-y-auto">
+								{projectsData
+								.filter((project) => project.assigend_task > 0)
+								.map((project) => (
 									<SelectItem
 										key={project.id}
 										value={project.id.toString()}
@@ -176,13 +178,15 @@ export default function DashboardPage() {
 						}}
 						disabled={!hasTasks}
 					>
-						<SelectTrigger id="task-select">
+						<SelectTrigger id="task-select" className="border-0 shadow-sm shadow-black/60 rounded-md">
 							<SelectValue placeholder="Select a task" />
 						</SelectTrigger>
 						{hasTasks && (
-							<SelectContent>
-								{filteredTasks.map((task) => (
-									<SelectItem key={task.id} value={task.id.toString()}>
+							<SelectContent className="border-0 shadow-lg shadow-black/60 rounded-md max-h-45 max-w-[90vw] overflow-y-auto">
+								{filteredTasks
+								.filter((task) => task.assigned_task> 0)
+								.map((task) => (
+									<SelectItem key={task.id} value={task.id.toString()} >
 										{task.name} ({getAssignedSubtaskCountForTask(task.id)} assigned)
 									</SelectItem>
 								))}
@@ -197,11 +201,11 @@ export default function DashboardPage() {
 						onValueChange={(value) => setSelectedSubtaskId(value)}
 						disabled={!hasSubtasks}
 					>
-						<SelectTrigger id="subtask-select">
+						<SelectTrigger id="subtask-select" className="border-0 shadow-sm shadow-black/60 rounded-md">
 							<SelectValue placeholder="Select a subtask" />
 						</SelectTrigger>
 						{hasSubtasks && (
-							<SelectContent>
+							<SelectContent className="border-0 shadow-lg shadow-black/60 rounded-md max-h-45 max-w-[90vw] overflow-y-auto">
 								{filteredSubtasks.map((subtask) => (
 									<SelectItem key={subtask.id} value={subtask.id.toString()}>
 										{subtask.name}
@@ -223,7 +227,7 @@ export default function DashboardPage() {
 					}
 					value={description}
 					onChange={(e) => setDescription(e.target.value)}
-					className="h-24"
+					className=" border-0 shadow-sm shadow-black/80 rounded-md"
 					disabled={!selectedSubtask}
 				/>
 			</div>
