@@ -32,7 +32,7 @@ export default function WorkSessionPage() {
   }, [subtaskId, taskActivityId])
 
   function openExternalLink() {
-    const url = 'https://clientportal.cloudhousetechnologies.com/support';
+    const url = 'https://preview--cloudhouse-logistics.lovable.app/staff/work-diary';
     if (window.electron?.openExternal) {
       window.electron.openExternal(url);
     } else {
