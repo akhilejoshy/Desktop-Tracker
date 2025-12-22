@@ -46,7 +46,7 @@ const startMouseMovementPolling = () => {
         const currentPos = robot.getMousePos();
         const distance = Math.abs(currentPos.x - lastMousePos.x) + Math.abs(currentPos.y - lastMousePos.y);
         if (distance > MIN_MOUSE_MOVEMENT_DISTANCE && isMonitoring) {
-            activityCounts.mouseActions++;
+            // activityCounts.mouseActions++;
             // console.log(`[ACTIVITY LOG] Mouse moved! Count: ${activityCounts.mouseActions}`);
         }
         lastMousePos = currentPos;

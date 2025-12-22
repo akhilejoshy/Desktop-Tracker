@@ -5,7 +5,6 @@ import { api } from "@/services/EventServices";
 interface Subtask {
   id: number;
   name: string;
-  assigned: boolean;
   description?: string;
 }
 

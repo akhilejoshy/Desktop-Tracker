@@ -51,13 +51,14 @@ export default function DashboardPage() {
 	}, [projectsData, selectedProjectId]);
 
 	const filteredSubtasks = useMemo(() => {
-		if (!selectedTaskId) return [];
-		const project = projectsData?.find((p) =>
-			p.tasks.some((t) => t.id === Number(selectedTaskId))
+		if (!projectsData || !selectedTaskId) return [];
+		const taskId = Number(selectedTaskId);
+		const project = projectsData.find((p) =>
+			p.tasks?.some((t) => t.id === taskId)
 		);
 		const task = project?.tasks.find((t) => t.id === Number(selectedTaskId));
-		const subtasks = task?.subtasks ?? [];
-		return subtasks.filter((st) => st.assigned);
+		if (!task || task.assigned_task <= 0) return [];
+		return task?.subtasks ?? [];
 	}, [projectsData, selectedTaskId]);
 
 	const selectedSubtask = useMemo(() => {
@@ -104,22 +105,6 @@ export default function DashboardPage() {
 		}
 
 	};
-
-	const getAssignedSubtaskCountForProject = (projectId: string) => {
-		const numericId = Number(projectId);
-		const project = projectsData?.find((p) => p.id === numericId);
-		if (!project) return 0;
-		return (project.tasks ?? []).reduce(
-			(count, t) => count + (t.subtasks ?? []).filter((st) => st.assigned).length,
-			0
-		);
-	};
-
-	const getAssignedSubtaskCountForTask = (taskId: number) => {
-		return allSubtasks.filter(
-			(st) => st.taskId === taskId && st.assigned
-		).length;
-	};
 	const hasSubtasks = filteredSubtasks && filteredSubtasks.length > 0;
 	const hasProjects = projectsData && projectsData.length > 0;
 	const hasTasks = filteredTasks && filteredTasks.length > 0;
@@ -151,19 +136,16 @@ export default function DashboardPage() {
 						{hasProjects && (
 							<SelectContent className="border-0 shadow-lg shadow-black/60 rounded-md max-h-45 max-w-[90vw] overflow-y-auto">
 								{projectsData
-								.filter((project) => project.assigend_task > 0)
-								.map((project) => (
-									<SelectItem
-										key={project.id}
-										value={project.id.toString()}
-									>
-										{project.project_name} (
-										{getAssignedSubtaskCountForProject(
-											project.id.toString()
-										)}{" "}
-										assigned)
-									</SelectItem>
-								))}
+									.map((project) => (
+										<SelectItem
+											key={project.id}
+											value={project.id.toString()}
+										>
+											{project.project_name} (
+											{project.assigend_task}{" "}
+											task)
+										</SelectItem>
+									))}
 							</SelectContent>
 						)}
 					</Select>
@@ -184,12 +166,11 @@ export default function DashboardPage() {
 						{hasTasks && (
 							<SelectContent className="border-0 shadow-lg shadow-black/60 rounded-md max-h-45 max-w-[90vw] overflow-y-auto">
 								{filteredTasks
-								.filter((task) => task.assigned_task> 0)
-								.map((task) => (
-									<SelectItem key={task.id} value={task.id.toString()} >
-										{task.name} ({getAssignedSubtaskCountForTask(task.id)} assigned)
-									</SelectItem>
-								))}
+									.map((task) => (
+										<SelectItem key={task.id} value={task.id.toString()} >
+											{task.name} ({task.assigned_task} subtask)
+										</SelectItem>
+									))}
 							</SelectContent>
 						)}
 					</Select>
