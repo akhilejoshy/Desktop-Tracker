@@ -21,8 +21,7 @@ const Footer: React.FC = () => {
   const navigate = useNavigate();
   const subtaskId = localStorage.getItem("subtaskId");
   const taskActivityId = Number(localStorage.getItem("taskActivityId"));
-  const workDiaryID = Number(localStorage.getItem("workDiaryID"));
-
+  const workDiaryID = Number(localStorage.getItem("workDiaryId"));
   const { isTimerRunning, stopTimer, setTotalWorkSeconds } = useTime();
   const { stopMonitoring } = useMonitoring();
   const dispatch = useDispatch();
