@@ -156,6 +156,29 @@ export const submitDailyActivity = createAsyncThunk(
   }
 );
 
+export const updateWorkingStatus = createAsyncThunk(
+  "activity/updateWorkingStatus",
+  async (workingStatus: boolean, { rejectWithValue }) => {
+    try {
+      const employeeId = localStorage.getItem("userId");
+      const url = `/api/v1/employee/${employeeId}/agent/working_status`;
+      const response = await api.patchEvent(url, [], {
+        params: { working_status: workingStatus },
+      });
+      return response.data;
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(
+          error.response?.data || "Failed to update working status"
+        );
+      }
+      return rejectWithValue(
+        "Unexpected error while updating working status."
+      );
+    }
+  }
+);
+
 
 const projectSlice = createSlice({
   name: "projects",
@@ -207,6 +230,17 @@ const projectSlice = createSlice({
       .addCase(submitDailyActivity.rejected, (state, action) => {
         state.submissionLoading = false;
         state.submissionError = action.payload as string;
+      })
+      .addCase(updateWorkingStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateWorkingStatus.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateWorkingStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });

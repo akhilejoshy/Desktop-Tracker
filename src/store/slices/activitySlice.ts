@@ -37,11 +37,11 @@ export const submitActivity = createAsyncThunk(
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         return rejectWithValue(
-          error.response?.data ||"Failed to submit activity"
+          error.response?.data || "Failed to submit activity"
         );
       }
       return rejectWithValue(
-       "Unexpected error during activity submission."
+        "Unexpected error during activity submission."
       );
     }
   }

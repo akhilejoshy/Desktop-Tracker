@@ -4,10 +4,12 @@ import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Switch } from "../components/ui/switch";
 import { Label } from "../components/ui/label";
-import { useAppSelector } from "@/store/hooks";
+import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { useTime } from "../contexts/TimeContext";
 import { X, Clock, Keyboard, MousePointerClick, LogOut } from "lucide-react";
 import { useMonitoring } from "@/contexts/MonitoringContext";
+import { updateWorkingStatus } from "@/store/slices/taskSlice";
+
 
 const formatSeconds = (seconds: number) => {
   const h = Math.floor(seconds / 3600).toString().padStart(2, "0");
@@ -17,6 +19,7 @@ const formatSeconds = (seconds: number) => {
 };
 
 export default function WorkSessionPage() {
+  const dispatch = useAppDispatch()
 
   const { subtaskId, workDiaryId, taskActivityId } = useParams<{ subtaskId: string, workDiaryId: string, taskActivityId: string }>();
   const navigate = useNavigate();
@@ -41,12 +44,17 @@ export default function WorkSessionPage() {
     }
   }
 
-  const handleToggle = (isRunning: boolean) => {
+  const handleToggle = async (isRunning: boolean) => {
     setTimerRunning(isRunning);
     if (!isRunning) {
       stopTimer();
       if (subtaskId && taskActivityId && workDiaryId) {
         stopMonitoring(subtaskId, Number(workDiaryId), Number(taskActivityId));
+      }
+      try {
+        await dispatch(updateWorkingStatus(false)).unwrap();
+      } catch (err) {
+        return;
       }
       navigate("/dashboard");
     }

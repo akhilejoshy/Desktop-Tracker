@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
       const info: UpdateInfo | null = await window.electron.UpdaterAPI.check();
       if (info?.isNewer) {
         setVersion(info.version);
-        setUpdateStatus("available"); 
+        setUpdateStatus("available");
       } else {
         setVersion("");
         setUpdateStatus("idle");
@@ -49,7 +49,7 @@ const Footer: React.FC = () => {
 
   useEffect(() => {
     const removeChecking = window.electron.UpdaterAPI.onChecking(() => {
-      checkingStartRef.current = Date.now();  
+      checkingStartRef.current = Date.now();
       setUpdateStatus("checking");
     });
     const removeAvailable = window.electron.UpdaterAPI.onAvailable((info) => {
@@ -117,17 +117,17 @@ const Footer: React.FC = () => {
     }
   };
 
-const handleLogout = () => {
+  const handleLogout = () => {
     dispatch(punchinClear())
-    if (isTimerRunning) {
-      stopTimer();
-      if (subtaskId && taskActivityId && workDiaryID) {
-        stopMonitoring(subtaskId, workDiaryID, taskActivityId);
-      }
+    if (!isTimerRunning) {
+      // stopTimer();
+      // if (subtaskId && taskActivityId && workDiaryID) {
+      //   stopMonitoring(subtaskId, workDiaryID, taskActivityId);
+      // }
+      setTotalWorkSeconds(0);
+      dispatch(logout())
+      navigate("/");
     }
-    setTotalWorkSeconds(0);
-    dispatch(logout())
-    navigate("/");
   };
 
   const renderUpdateIcon = () => {
@@ -248,8 +248,14 @@ const handleLogout = () => {
         size="icon"
         onClick={handleLogout}
         aria-label="Log out"
+        disabled={isTimerRunning}
       >
-        <LogOut className="h-6 w-6 text-primary" />
+        <LogOut
+          className={`h-6 w-6 ${isTimerRunning
+            ? "text-muted-foreground cursor-not-allowed"
+            : "text-primary"
+            }`}
+        />
       </Button>
     </footer>
   );
