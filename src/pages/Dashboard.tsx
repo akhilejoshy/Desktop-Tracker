@@ -8,9 +8,11 @@ import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { useTime } from "../contexts/TimeContext";
 import { useMonitoring } from "@/contexts/MonitoringContext";
-import { fetchProjectsWithAssignedSubtasks, submitDailyActivity, DailyActivityPayload, fetchDailyActivity } from "@/store/slices/taskSlice";
+import { fetchProjectsWithAssignedSubtasks, submitDailyActivity, DailyActivityPayload, fetchDailyActivity, updateWorkingStatus } from "@/store/slices/taskSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Loader2 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
+
 
 export default function DashboardPage() {
 	const navigate = useNavigate();
@@ -92,6 +94,7 @@ export default function DashboardPage() {
 			const response = await dispatch(submitDailyActivity(formData)).unwrap();
 			workDiaryID = response?.response?.data?.task_activities[0]?.work_diary_id
 			taskActivityId = response?.response?.data?.task_activities[0]?.id
+			await dispatch(updateWorkingStatus(true)).unwrap();
 		} catch (err) {
 			return;
 		}
@@ -108,6 +111,8 @@ export default function DashboardPage() {
 	const hasSubtasks = filteredSubtasks && filteredSubtasks.length > 0;
 	const hasProjects = projectsData && projectsData.length > 0;
 	const hasTasks = filteredTasks && filteredTasks.length > 0;
+	const truncate = (text: string, maxLength = 18) =>
+		text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 
 	return (
 		<div className="space-y-6 flex flex-col h-full ">
@@ -228,24 +233,59 @@ export default function DashboardPage() {
 			<div className="space-y-2">
 				<h5 className="text-xl font-bold">Daily Work History</h5>
 				{workDiary && Array.isArray(workDiary.task_activities) && workDiary.task_activities.length > 0 ? (
-					<div className="flex flex-wrap gap-2">
-						{workDiary.task_activities.map((taskActivity) => (
-							<Badge
-								key={taskActivity.id}
-								variant="secondary"
-								className="cursor-pointer px-2 py-0.5 text-xs bg-blue-600! hover:bg-blue-800/70!"
-								onClick={() => {
-									if (localStorage.getItem('activity_period') && taskActivity.sub_task_id && taskActivity.work_diary_id) {
-										startTimer(taskActivity.id.toString());
-										startMonitoring(Number(localStorage.getItem('activity_period')), taskActivity.sub_task_id.toString(), taskActivity.work_diary_id, taskActivity.id);
-										navigate(`/work-session/${taskActivity.sub_task_id}/${taskActivity.work_diary_id}/${taskActivity.id}`);
-									}
-								}}
-							>
-								{taskActivity.subtask_name} - {taskActivity.total_time_spent}
-							</Badge>
-						))}
-					</div>
+					<TooltipProvider>
+						<div className="flex flex-wrap gap-2">
+							{workDiary.task_activities.map((taskActivity) => (
+								<Tooltip key={taskActivity.id}>
+									<TooltipTrigger asChild>
+										<Badge
+											variant="secondary"
+											className="cursor-pointer px-2 py-0.5 text-xs bg-blue-600! hover:bg-blue-800/70!"
+											onClick={async () => {
+												if (
+													localStorage.getItem("activity_period") &&
+													taskActivity.sub_task_id &&
+													taskActivity.work_diary_id
+												) {
+													try {
+														// 1️⃣ update working status
+														await dispatch(updateWorkingStatus(true)).unwrap();
+
+														// 2️⃣ start timer & monitoring
+														startTimer(taskActivity.id.toString());
+														startMonitoring(
+															Number(localStorage.getItem("activity_period")),
+															taskActivity.sub_task_id.toString(),
+															taskActivity.work_diary_id,
+															taskActivity.id
+														);
+
+														// 3️⃣ navigate
+														navigate(
+															`/work-session/${taskActivity.sub_task_id}/${taskActivity.work_diary_id}/${taskActivity.id}`
+														);
+													} catch (err) {
+														// optional: show toast / handle error
+														return;
+													}
+												}
+											}}
+
+										>
+											{truncate(taskActivity.subtask_name)} - {taskActivity.total_time_spent}
+										</Badge>
+									</TooltipTrigger>
+
+									<TooltipContent side="top" align="center" collisionPadding={8} className="border-0 shadow-lg shadow-black/60 rounded-md ">
+										<p className="max-w-[85vw] break-words text-center">
+											{taskActivity.subtask_name}
+										</p>
+									</TooltipContent>
+								</Tooltip>
+							))}
+						</div>
+					</TooltipProvider>
+
 
 				) : (
 					<div className="flex-1 flex items-center justify-center text-center">
