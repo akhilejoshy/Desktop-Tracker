@@ -65,12 +65,6 @@ const Footer: React.FC = () => {
       else setTimeout(finish, minDelay - elapsed);
     });
 
-    // const removeAvailable = window.electron.UpdaterAPI.onAvailable((info: UpdateInfo) => {
-    //   if (info.isNewer) {
-    //     setVersion(info.version);
-    //     setUpdateStatus("available");
-    //   }
-    // });
 
     const removeNotAvailable = window.electron.UpdaterAPI.onNotAvailable(() => {
       const minDelay = 2000;
@@ -103,27 +97,27 @@ const Footer: React.FC = () => {
   }, []);
 
   const handleUpdateClick = async () => {
-    switch (updateStatus) {
-      case "idle":
-        await window.electron.UpdaterAPI.check();
-        break;
-      case "available":
-        setUpdateStatus("downloading");
-        await window.electron.UpdaterAPI.download();
-        break;
-      case "downloaded":
-        await window.electron.UpdaterAPI.install();
-        break;
+    if (updateStatus === "idle" || updateStatus === "checking") {
+      setUpdateStatus("checking"); 
+      setTimeout(() => {
+        navigate(0); 
+      }, 300);
+      return;
+    }
+    if (updateStatus === "available") {
+      setUpdateStatus("downloading");
+      await window.electron.UpdaterAPI.download();
+      return;
+    }
+    if (updateStatus === "downloaded") {
+      await window.electron.UpdaterAPI.install();
     }
   };
+
 
   const handleLogout = () => {
     dispatch(punchinClear())
     if (!isTimerRunning) {
-      // stopTimer();
-      // if (subtaskId && taskActivityId && workDiaryID) {
-      //   stopMonitoring(subtaskId, workDiaryID, taskActivityId);
-      // }
       setTotalWorkSeconds(0);
       dispatch(logout())
       navigate("/");
@@ -132,45 +126,45 @@ const Footer: React.FC = () => {
 
   const renderUpdateIcon = () => {
     switch (updateStatus) {
-      // case "idle":
-      //   return (
-      //     <div className="relative">
-      //       <svg
-      //         xmlns="http://www.w3.org/2000/svg"
-      //         fill="none"
-      //         viewBox="0 0 24 24"
-      //         strokeWidth={1.5}
-      //         stroke="currentColor"
-      //         className="w-5 h-5"
-      //       >
-      //         <path
-      //           strokeLinecap="round"
-      //           strokeLinejoin="round"
-      //           d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-      //         />
-      //       </svg>
-      //       {version && (
-      //         <span className="absolute top-0 right-0 w-2 h-2 bg-green-500 rounded-full"></span>
-      //       )}
-      //     </div>
-      //   );
-      // case "checking":
-      //   return (
-      //     <svg
-      //       xmlns="http://www.w3.org/2000/svg"
-      //       fill="none"
-      //       viewBox="0 0 24 24"
-      //       strokeWidth={1.5}
-      //       stroke="currentColor"
-      //       className="w-5 h-5 animate-spin"
-      //     >
-      //       <path
-      //         strokeLinecap="round"
-      //         strokeLinejoin="round"
-      //         d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-      //       />
-      //     </svg>
-      //   );
+      case "idle":
+        return (
+          <div className="relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+              />
+            </svg>
+            {version && (
+              <span className="absolute top-0 right-0 w-2 h-2 bg-green-500 rounded-full"></span>
+            )}
+          </div>
+        );
+      case "checking":
+        return (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-5 h-5 animate-spin"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+            />
+          </svg>
+        );
       case "available":
         return (
           <div className="flex items-center gap-1">
@@ -239,24 +233,27 @@ const Footer: React.FC = () => {
     <footer className="sticky bottom-0 z-50 shrink-0 p-2 bg-white flex justify-between items-center">
       <button
         onClick={handleUpdateClick}
-        className="p-2 rounded focus:outline-none text-primary"
+        disabled={isTimerRunning}
+        className={`p-2 rounded focus:outline-none ${isTimerRunning
+            ? "text-muted-foreground"
+            : "text-primary"
+          }`}
       >
         {renderUpdateIcon()}
       </button>
-      <Button
-        variant="ghost"
-        size="icon"
+      <button
         onClick={handleLogout}
         aria-label="Log out"
         disabled={isTimerRunning}
+        className="me-2"
       >
         <LogOut
-          className={`h-6 w-6 ${isTimerRunning
-            ? "text-muted-foreground cursor-not-allowed"
-            : "text-primary"
+          className={`h-4 w-4 scale-115 ${isTimerRunning
+              ? "text-muted-foreground "
+              : "text-primary"
             }`}
         />
-      </Button>
+      </button>
     </footer>
   );
 };
