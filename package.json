@@ -1,7 +1,7 @@
 {
   "name": "cloudhouse",
   "private": true,
-  "version": "0.1.9",
+  "version": "0.1.10",
   "author": "CloudHouse Technologies <cloudhouse@cloudstick.io>",
   "description": "CloudHouse Agent for automation and system monitoring",
   "homepage": "https://api.cloudhousetechnologies.com",

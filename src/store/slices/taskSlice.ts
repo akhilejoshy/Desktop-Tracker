@@ -109,7 +109,7 @@ export const fetchDailyActivity = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const today = new Date();
-      const formattedDate = today.toISOString().split("T")[0];
+      const formattedDate = today.toLocaleDateString('en-CA');
       const assigneeId = localStorage.getItem("userId");
       const url = `/api/v1/employee/${assigneeId}/agent?date=${formattedDate}`;
       const response = await api.getEvents(url);
@@ -158,12 +158,21 @@ export const submitDailyActivity = createAsyncThunk(
 
 export const updateWorkingStatus = createAsyncThunk(
   "activity/updateWorkingStatus",
-  async (workingStatus: boolean, { rejectWithValue }) => {
+  async (
+    {
+      workingStatus,
+      subtaskId,
+    }: { workingStatus: boolean; subtaskId?: number },
+    { rejectWithValue }
+  ) => {
     try {
       const employeeId = localStorage.getItem("userId");
       const url = `/api/v1/employee/${employeeId}/agent/working_status`;
       const response = await api.patchEvent(url, [], {
-        params: { working_status: workingStatus },
+        params: {
+          working_status: workingStatus,
+          subtask_id: subtaskId,
+        },
       });
       return response.data;
     } catch (error: any) {

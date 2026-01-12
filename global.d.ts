@@ -7,15 +7,18 @@ interface UpdateInfo {
   isNewer?: boolean;
 }
 
+interface SystemInactivePayload {
+  reason: 'lock-screen' | 'suspend' | 'shutdown';
+}
+
 interface ElectronAPI {
   send: (
     channel: 'start-monitoring' | 'stop-monitoring' | 'save-screenshot',
     ...args: any[]
   ) => void;
-  on: (
-    channel: 'periodic-data',
-    func: (data: any) => void
-  ) => () => void;
+  on(channel: 'system-inactive', func: (data: SystemInactivePayload) => void): () => void;
+  on(channel: 'periodic-data', func: (data: any) => void): () => void;
+
   openExternal: (url: string) => void;
   UpdaterAPI: {
     check: () => Promise<UpdateInfo | null>;
@@ -36,4 +39,4 @@ declare global {
   }
 }
 
-export {};
+export { };

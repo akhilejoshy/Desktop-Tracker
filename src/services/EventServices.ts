@@ -1,7 +1,8 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 
-const apiUrl = "https://api.cloudhousetechnologies.com"
-// const apiUrl = "http://localhost:8080"
+// const apiUrl = "https://api.cloudhousetechnologies.com"
+const apiUrl = "http://localhost:8080"
+// const apiUrl = "https://cierra-fibrinolytic-rylie.ngrok-free.dev"
 
 const ApiClient: AxiosInstance = axios.create({
   baseURL: apiUrl,
