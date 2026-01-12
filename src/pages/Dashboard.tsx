@@ -72,7 +72,7 @@ export default function DashboardPage() {
 	const handleStart = async () => {
 		if (!selectedSubtaskId || !selectedSubtask) return;
 		const now = new Date();
-		const dateFormatted = now.toISOString();
+		const dateFormatted = now.toLocaleString('sv-SE', { timeZone: 'Asia/Kolkata', hour12: false }).replace(' ', 'T') + "+05:30";
 		const timeFormatted = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 		const activityData = {
 			sub_task_id: Number(selectedSubtaskId),
@@ -94,7 +94,12 @@ export default function DashboardPage() {
 			const response = await dispatch(submitDailyActivity(formData)).unwrap();
 			workDiaryID = response?.response?.data?.task_activities[0]?.work_diary_id
 			taskActivityId = response?.response?.data?.task_activities[0]?.id
-			await dispatch(updateWorkingStatus(true)).unwrap();
+			await dispatch(
+				updateWorkingStatus({
+					workingStatus: true,
+					subtaskId: Number(selectedSubtaskId),
+				})
+			).unwrap();
 		} catch (err) {
 			return;
 		}
@@ -248,10 +253,12 @@ export default function DashboardPage() {
 													taskActivity.work_diary_id
 												) {
 													try {
-														// 1️⃣ update working status
-														await dispatch(updateWorkingStatus(true)).unwrap();
-
-														// 2️⃣ start timer & monitoring
+														await dispatch(
+															updateWorkingStatus({
+																workingStatus: true,
+																subtaskId: taskActivity.sub_task_id,
+															})
+														).unwrap();
 														startTimer(taskActivity.id.toString());
 														startMonitoring(
 															Number(localStorage.getItem("activity_period")),
@@ -259,13 +266,10 @@ export default function DashboardPage() {
 															taskActivity.work_diary_id,
 															taskActivity.id
 														);
-
-														// 3️⃣ navigate
 														navigate(
 															`/work-session/${taskActivity.sub_task_id}/${taskActivity.work_diary_id}/${taskActivity.id}`
 														);
 													} catch (err) {
-														// optional: show toast / handle error
 														return;
 													}
 												}

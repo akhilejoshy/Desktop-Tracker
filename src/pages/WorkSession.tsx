@@ -52,7 +52,12 @@ export default function WorkSessionPage() {
         stopMonitoring(subtaskId, Number(workDiaryId), Number(taskActivityId));
       }
       try {
-        await dispatch(updateWorkingStatus(false)).unwrap();
+        await dispatch(
+          updateWorkingStatus({
+            workingStatus: false,
+            subtaskId: subtaskId ? Number(subtaskId) : undefined,
+          })
+        ).unwrap();
       } catch (err) {
         return;
       }
@@ -65,13 +70,31 @@ export default function WorkSessionPage() {
     .flatMap((t) => (t.subtasks ?? []))
     .find((st) => st.id === Number(subtaskId));
 
-  if (!subtask) return <div>Subtask not found.</div>;
+  // useEffect(() => {
+  //   if (!subtask) {
+  //     handleToggle(false);
+  //   }
+  // }, [subtask]);
+
+  useEffect(() => {
+    const unsubscribe = window.electron?.on(
+      'system-inactive',
+      ({ reason }) => {
+        console.log('System inactive:', reason);
+        handleToggle(false);
+      }
+    );
+    return () => {
+      unsubscribe?.();
+    };
+  }, []);
+
   const totalSubtaskTime = 0 + sessionWorkSeconds;
 
   return (
     <div className="flex flex-col h-full space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold">{subtask.name}</h2>
+        <h2 className="text-xl font-bold">{subtask?.name}</h2>
         <div className="flex items-center gap-2 space-y-2">
           <Label className={`font-semibold ${isTimerRunning ? "text-primary" : "text-muted-foreground"} m-0`}>
             {isTimerRunning ? "Start" : "Stop"}

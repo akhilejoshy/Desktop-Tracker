@@ -100,6 +100,7 @@ const Footer: React.FC = () => {
     if (updateStatus === "idle" || updateStatus === "checking") {
       setUpdateStatus("checking"); 
       setTimeout(() => {
+        navigate("/dashboard");
         navigate(0); 
       }, 300);
       return;

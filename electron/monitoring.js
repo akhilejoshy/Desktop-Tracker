@@ -71,7 +71,7 @@ const showScreenshotNotification = () => {
     });
 
     notification.on('click', () => {
-        const win = BrowserWindow.getAllWindows()[0]; 
+        const win = BrowserWindow.getAllWindows()[0];
         if (win) {
             if (win.isMinimized()) win.restore();
             win.show();
@@ -87,7 +87,7 @@ function formatTime(date) {
 }
 
 export function setupMonitoringHandlers() {
-    ipcMain.on(IPC_CHANNELS.START_MONITORING, (event, intervalMs, subtaskId, workDiaryID, taskActivityId) => {        
+    ipcMain.on(IPC_CHANNELS.START_MONITORING, (event, intervalMs, subtaskId, workDiaryID, taskActivityId) => {
         if (monitoringInterval) clearInterval(monitoringInterval);
         activateMonitoring();
         const now = new Date();
