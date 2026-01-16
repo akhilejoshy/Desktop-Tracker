@@ -43,7 +43,7 @@ export const TimeProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (workDiary?.total_work_time){
+    if (workDiary?.total_work_time) {
       const [hours, minutes, seconds] = workDiary.total_work_time.split(":").map(Number);
       const totalSeconds = hours * 3600 + minutes * 60 + seconds;
       setTotalWorkSeconds(totalSeconds)

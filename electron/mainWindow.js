@@ -32,7 +32,6 @@ export function createMainWindow(currentDir) {
         },
     });
 
-
     win.on('close', (event) => {
         if (isQuitingForUpdate) {
             return;
@@ -78,7 +77,7 @@ export function createMainWindow(currentDir) {
     const startUrl = process.env.ELECTRON_START_URL;
     if (startUrl) {
         win.loadURL(startUrl);
-        win.webContents.openDevTools({ mode: 'detach' }); 
+        win.webContents.openDevTools({ mode: 'detach' });
     } else {
         const htmlPath = path.join(currentDir, '..', 'dist', 'index.html');
         win.loadFile(htmlPath);
@@ -111,7 +110,7 @@ export function createMainWindow(currentDir) {
             win.webContents.send('system-inactive', { reason: 'suspend' });
         }
     });
-
+    return win;
 }
 
 export function getMainWindow() {

@@ -7,7 +7,7 @@ import { useTime } from "@/contexts/TimeContext";
 import { useDispatch } from "react-redux";
 import { punchinClear } from "@/store/slices/taskSlice";
 import { logout } from "@/store/slices/loginSlice"
-import {syncActivityLogs} from "@/hooks/activityStorage"
+import { syncActivityLogs } from "@/hooks/activityStorage"
 
 interface Progress {
   percent: number;
@@ -99,10 +99,10 @@ const Footer: React.FC = () => {
 
   const handleUpdateClick = async () => {
     if (updateStatus === "idle" || updateStatus === "checking") {
-      setUpdateStatus("checking"); 
+      setUpdateStatus("checking");
       setTimeout(() => {
         navigate("/dashboard");
-        navigate(0); 
+        navigate(0);
         syncActivityLogs(dispatch)
       }, 300);
       return;
@@ -114,6 +114,7 @@ const Footer: React.FC = () => {
     }
     if (updateStatus === "downloaded") {
       await window.electron.UpdaterAPI.install();
+      handleLogout()
     }
   };
 
@@ -238,8 +239,8 @@ const Footer: React.FC = () => {
         onClick={handleUpdateClick}
         disabled={isTimerRunning}
         className={`p-2 rounded focus:outline-none ${isTimerRunning
-            ? "text-muted-foreground"
-            : "text-primary"
+          ? "text-muted-foreground"
+          : "text-primary"
           }`}
       >
         {renderUpdateIcon()}
@@ -252,8 +253,8 @@ const Footer: React.FC = () => {
       >
         <LogOut
           className={`h-4 w-4 scale-115 ${isTimerRunning
-              ? "text-muted-foreground "
-              : "text-primary"
+            ? "text-muted-foreground "
+            : "text-primary"
             }`}
         />
       </button>
