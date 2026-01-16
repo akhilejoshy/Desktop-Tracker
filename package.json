@@ -1,7 +1,7 @@
 {
   "name": "cloudhouse",
   "private": true,
-  "version": "0.1.10",
+  "version": "0.1.12",
   "author": "CloudHouse Technologies <cloudhouse@cloudstick.io>",
   "description": "CloudHouse Agent for automation and system monitoring",
   "homepage": "https://api.cloudhousetechnologies.com",
@@ -85,25 +85,36 @@
       "provider": "generic",
       "url": "https://cloudhouse.in-maa-1.linodeobjects.com/agent-application/"
     },
+    "asar": true,
+    "asarUnpack": [
+      "**/node-global-key-listener/bin/*"
+    ],
     "files": [
       "electron/**/*",
       "node_modules/**/*",
       "dist/**/*",
       "icon.ico",
       "icon.png",
-      "icon.icns",
-      "!**/node-global-key-listener/bin/MacKeyServer"
+      "icon.icns"
     ],
     "directories": {
       "output": "dist"
     },
     "win": {
       "target": "nsis",
-      "icon": "icon.ico"
+      "icon": "icon.ico",
+      "files": [
+        "!**/node-global-key-listener/bin/MacKeyServer",
+        "!**/node-global-key-listener/bin/X11KeyServer"
+      ]
     },
     "mac": {
       "target": "dmg",
-      "icon": "icon.icns"
+      "icon": "icon.icns",
+      "files": [
+        "!**/node-global-key-listener/bin/WinKeyServer.exe",
+        "!**/node-global-key-listener/bin/X11KeyServer"
+      ]
     },
     "linux": {
       "target": [
@@ -111,12 +122,25 @@
         "deb"
       ],
       "category": "Utility",
-      "icon": "icon.png"
+      "icon": "icon.png",
+      "files": [
+        "!**/node-global-key-listener/bin/WinKeyServer.exe",
+        "!**/node-global-key-listener/bin/MacKeyServer"
+      ]
     },
     "deb": {
       "depends": [
         "scrot"
       ]
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/Vandana-Ganga/agent.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/Vandana-Ganga/agent/issues"
   }
 }

@@ -73,7 +73,14 @@ export const deactivateMonitoring = () => {
 };
 
 export const getAndResetActivityCounts = () => {
-    const countsToSend = { ...activityCounts };
-    activityCounts = { ...initialActivityCounts };
+    const countsToSend = {
+        ...activityCounts,
+        id: Date.now()
+    };
+    activityCounts = {
+        ...initialActivityCounts,
+        keyActions: 0,
+        mouseActions: 0
+    };
     return countsToSend;
 };

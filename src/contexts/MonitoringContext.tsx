@@ -14,10 +14,10 @@ export const MonitoringProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   );
 };
 
-export const useMonitoring = (): MonitoringHookReturn => {
+export const useMonitoringContext = (): MonitoringHookReturn => {
   const ctx = useContext(MonitoringContext);
   if (!ctx) {
-    throw new Error("useMonitoring must be used within a MonitoringProvider");
+    throw new Error("useMonitoringContext must be used within a MonitoringProvider");
   }
   return ctx;
 };

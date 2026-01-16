@@ -57,7 +57,6 @@ export const TimeProvider = ({ children }: { children: ReactNode }) => {
         const now = Date.now();
         const sessionSecs = Math.floor((now - sessionStartTime) / 1000);
         setSessionWorkSeconds(sessionSecs);
-
         const storedTotal = Number(localStorage.getItem('totalWorkSeconds') || 0);
         const newTotalWorkTime = storedTotal + sessionSecs;
         setTotalWorkSeconds(newTotalWorkTime)

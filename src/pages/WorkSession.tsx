@@ -7,7 +7,7 @@ import { Label } from "../components/ui/label";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { useTime } from "../contexts/TimeContext";
 import { X, Clock, Keyboard, MousePointerClick, LogOut } from "lucide-react";
-import { useMonitoring } from "@/contexts/MonitoringContext";
+import { useMonitoringContext } from "@/contexts/MonitoringContext";
 import { updateWorkingStatus } from "@/store/slices/taskSlice";
 
 
@@ -24,7 +24,7 @@ export default function WorkSessionPage() {
   const { subtaskId, workDiaryId, taskActivityId } = useParams<{ subtaskId: string, workDiaryId: string, taskActivityId: string }>();
   const navigate = useNavigate();
   const { sessionWorkSeconds, isTimerRunning, setTimerRunning, startTimer, stopTimer } = useTime();
-  const { stopMonitoring, latestLogEntry } = useMonitoring();
+  const { stopMonitoring, latestLogEntry } = useMonitoringContext();
 
   useEffect(() => {
     if (subtaskId && taskActivityId && workDiaryId) {
@@ -59,9 +59,10 @@ export default function WorkSessionPage() {
           })
         ).unwrap();
       } catch (err) {
-        return;
+        console.error("Failed to update working status:", err);
+      } finally {
+        navigate("/dashboard");
       }
-      navigate("/dashboard");
     }
   };
   const projects = useAppSelector((state) => state.task.projectsData);
@@ -69,12 +70,6 @@ export default function WorkSessionPage() {
     .flatMap((p) => (p.tasks ?? []))
     .flatMap((t) => (t.subtasks ?? []))
     .find((st) => st.id === Number(subtaskId));
-
-  // useEffect(() => {
-  //   if (!subtask) {
-  //     handleToggle(false);
-  //   }
-  // }, [subtask]);
 
   useEffect(() => {
     const unsubscribe = window.electron?.on(

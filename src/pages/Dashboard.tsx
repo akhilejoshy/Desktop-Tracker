@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
 import { useTime } from "../contexts/TimeContext";
-import { useMonitoring } from "@/contexts/MonitoringContext";
+import { useMonitoringContext } from "@/contexts/MonitoringContext";
 import { fetchProjectsWithAssignedSubtasks, submitDailyActivity, DailyActivityPayload, fetchDailyActivity, updateWorkingStatus } from "@/store/slices/taskSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Loader2 } from "lucide-react";
@@ -28,7 +28,7 @@ export default function DashboardPage() {
 		dispatch(fetchProjectsWithAssignedSubtasks())
 		setTimeout(() => {
 			dispatch(fetchDailyActivity()).unwrap()
-		}, 500);
+		}, 1000);
 	}, [dispatch])
 
 	const allSubtasks = useMemo(() => {
@@ -68,7 +68,7 @@ export default function DashboardPage() {
 		return allSubtasks.find((st) => st.id === Number(selectedSubtaskId));
 	}, [allSubtasks, selectedSubtaskId]);
 
-	const { startMonitoring } = useMonitoring();
+	const { startMonitoring } = useMonitoringContext();
 	const handleStart = async () => {
 		if (!selectedSubtaskId || !selectedSubtask) return;
 		const now = new Date();

@@ -1,5 +1,4 @@
 export const initialActivityCounts = {
-    id: Date.now(),
     keyActions: 0,
     mouseActions: 0,
     startTime:null,

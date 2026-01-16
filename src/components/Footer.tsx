@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "../components/ui/button";
 import { LogOut } from "lucide-react";
-import { useMonitoring } from "@/contexts/MonitoringContext";
+import { useMonitoringContext } from "@/contexts/MonitoringContext";
 import { useNavigate } from "react-router-dom";
 import { useTime } from "@/contexts/TimeContext";
 import { useDispatch } from "react-redux";
 import { punchinClear } from "@/store/slices/taskSlice";
-import { logout } from "@/store/slices/loginSlice";
+import { logout } from "@/store/slices/loginSlice"
+import {syncActivityLogs} from "@/hooks/activityStorage"
 
 interface Progress {
   percent: number;
@@ -23,7 +24,7 @@ const Footer: React.FC = () => {
   const taskActivityId = Number(localStorage.getItem("taskActivityId"));
   const workDiaryID = Number(localStorage.getItem("workDiaryId"));
   const { isTimerRunning, stopTimer, setTotalWorkSeconds } = useTime();
-  const { stopMonitoring } = useMonitoring();
+  const { stopMonitoring } = useMonitoringContext();
   const dispatch = useDispatch();
 
   type UpdateStatus = "idle" | "checking" | "available" | "downloading" | "downloaded";
@@ -102,6 +103,7 @@ const Footer: React.FC = () => {
       setTimeout(() => {
         navigate("/dashboard");
         navigate(0); 
+        syncActivityLogs(dispatch)
       }, 300);
       return;
     }
