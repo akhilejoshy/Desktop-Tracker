@@ -45,7 +45,6 @@
     "clsx": "^2.1.1",
     "electron-updater": "^6.6.2",
     "lucide-react": "^0.545.0",
-    "node-global-key-listener": "^0.3.0",
     "react": "^19.1.1",
     "react-day-picker": "^9.11.1",
     "react-dom": "^19.1.1",
@@ -54,7 +53,8 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.4",
     "robotjs": "^0.6.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "uiohook-napi": "^1.5.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
@@ -85,10 +85,6 @@
       "provider": "generic",
       "url": "https://cloudhouse.in-maa-1.linodeobjects.com/agent-application/"
     },
-    "asar": true,
-    "asarUnpack": [
-      "**/node-global-key-listener/bin/*"
-    ],
     "files": [
       "electron/**/*",
       "node_modules/**/*",
@@ -102,19 +98,11 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "icon.ico",
-      "files": [
-        "!**/node-global-key-listener/bin/MacKeyServer",
-        "!**/node-global-key-listener/bin/X11KeyServer"
-      ]
+      "icon": "icon.ico"
     },
     "mac": {
       "target": "dmg",
-      "icon": "icon.icns",
-      "files": [
-        "!**/node-global-key-listener/bin/WinKeyServer.exe",
-        "!**/node-global-key-listener/bin/X11KeyServer"
-      ]
+      "icon": "icon.icns"
     },
     "linux": {
       "target": [
@@ -122,25 +110,12 @@
         "deb"
       ],
       "category": "Utility",
-      "icon": "icon.png",
-      "files": [
-        "!**/node-global-key-listener/bin/WinKeyServer.exe",
-        "!**/node-global-key-listener/bin/MacKeyServer"
-      ]
+      "icon": "icon.png"
     },
     "deb": {
       "depends": [
         "scrot"
       ]
     }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://gitlab.com/Vandana-Ganga/agent.git"
-  },
-  "keywords": [],
-  "license": "ISC",
-  "bugs": {
-    "url": "https://gitlab.com/Vandana-Ganga/agent/issues"
   }
 }

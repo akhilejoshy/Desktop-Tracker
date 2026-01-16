@@ -1,43 +1,35 @@
 import { createRequire } from 'node:module';
 import { initialActivityCounts, MIN_MOUSE_MOVEMENT_DISTANCE, MOUSE_POLL_INTERVAL_MS } from './constants.js';
+import pkg from 'uiohook-napi';
 
+const { uIOhook } = pkg;
 const require = createRequire(import.meta.url);
 const robot = require('robotjs');
-const GKL_Module = require('node-global-key-listener');
-let GlobalKeyListenerConstructor = GKL_Module.GlobalKeyListener || GKL_Module.default?.GlobalKeyListener || GKL_Module.default || GKL_Module;
-
-if (typeof GlobalKeyListenerConstructor !== 'function') {
-    for (const key in GKL_Module) {
-        const prop = GKL_Module[key];
-        if (typeof prop === 'function' && key.charAt(0) === key.charAt(0).toUpperCase()) {
-            GlobalKeyListenerConstructor = prop;
-            break;
-        }
-    }
-}
 
 let lastMousePos = { x: 0, y: 0 };
 let mouseMovementPoll = null;
 let activityCounts = { ...initialActivityCounts };
 let isMonitoring = false;
 export const getIsMonitoring = () => isMonitoring;
-const globalKeyListener = new GlobalKeyListenerConstructor();
 const startGlobalActivityListeners = () => {
-    globalKeyListener.addListener((e) => {
+    uIOhook.removeAllListeners('keydown');
+    uIOhook.removeAllListeners('mousedown');
+    uIOhook.on('keydown', (e) => {
         if (!isMonitoring) return;
-        if (e.state === "DOWN") {
-            if (e.name && e.name.startsWith('MOUSE ')) {
-                activityCounts.mouseActions++;
-                // console.log(`[ACTIVITY LOG] MOUSE CLICK: ${e.name}. Count: ${activityCounts.mouseActions}`);
-            } else if (e.name) {
-                activityCounts.keyActions++;
-                // console.log(`[ACTIVITY LOG] KEY PRESS: ${e.name}. Count: ${activityCounts.keyActions}`);
-            } else if (e.button) {
-                activityCounts.mouseActions++;
-                // console.log(`[ACTIVITY LOG] MOUSE CLICK (e.button): Button ${e.button}. Count: ${activityCounts.mouseActions}`);
-            }
-        }
+        activityCounts.keyActions++;
+        // console.log(`[ACTIVITY LOG] KEY PRESS. Total: ${activityCounts.keyActions}`);
     });
+    uIOhook.on('mousedown', (e) => {
+        if (!isMonitoring) return;
+        activityCounts.mouseActions++;
+        // console.log(`[ACTIVITY LOG] MOUSE CLICK. Total: ${activityCounts.mouseActions}`);
+    });
+
+    try {
+        uIOhook.start();
+    } catch (err) {
+        console.error('Failed to start uIOhook:', err);
+    }
 };
 
 const startMouseMovementPolling = () => {
@@ -70,6 +62,10 @@ export const activateMonitoring = () => {
 export const deactivateMonitoring = () => {
     isMonitoring = false;
     stopMouseMovementPolling();
+    try {
+        uIOhook.stop();
+    } catch (e) {
+    }
 };
 
 export const getAndResetActivityCounts = () => {
