@@ -36,6 +36,7 @@ export const TimeProvider = ({ children }: { children: ReactNode }) => {
       const storedTotal = Number(localStorage.getItem('totalWorkSeconds') || 0);
       setTotalWorkSeconds(storedTotal);
     } else {
+      localStorage.removeItem('temp_log');
       localStorage.removeItem('punchInTime');
       localStorage.removeItem('punchInDate');
       localStorage.removeItem('totalWorkSeconds');

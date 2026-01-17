@@ -40,47 +40,48 @@ export const saveActivity = (data: ActivityData) => {
     parsed.push(data);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
 
-    const today = new Date().toDateString();
-    const storedPunchInDate = localStorage.getItem('punchInDate');
-    if (storedPunchInDate === today) {
-      const { screenshot, ...rest } = data;
-      const startSeconds = timeToSeconds(data.startTime);
-      const endSeconds = timeToSeconds(data.endTime);
-      const diffSeconds =
-        endSeconds >= startSeconds
-          ? endSeconds - startSeconds
-          : 24 * 3600 - startSeconds + endSeconds;
-      const timeGap = secondsToTime(diffSeconds);
-      const tempRaw = localStorage.getItem("temp_log");
-      const tempObj = tempRaw ? JSON.parse(tempRaw) : { data: [] };
-      const totalSeconds =
-        tempObj.data.reduce(
-          (sum: number, item: any) => sum + (item.timeGap ? timeToSeconds(item.timeGap) : 0),
-          0
-        ) + diffSeconds;
+    const { screenshot, ...rest } = data;
+    const startSeconds = timeToSeconds(data.startTime);
+    const endSeconds = timeToSeconds(data.endTime);
+    const diffSeconds =
+      endSeconds >= startSeconds
+        ? endSeconds - startSeconds
+        : 24 * 3600 - startSeconds + endSeconds;
+    const timeGap = secondsToTime(diffSeconds);
+    const tempRaw = localStorage.getItem("temp_log");
+    const tempObj = tempRaw ? JSON.parse(tempRaw) : { data: [] };
+    const totalSeconds =
+      tempObj.data.reduce(
+        (sum: number, item: any) => sum + (item.timeGap ? timeToSeconds(item.timeGap) : 0),
+        0
+      ) + diffSeconds;
 
-      const sanitizedItem = {
-        ...rest,
-        currentTime: new Date().toLocaleTimeString("en-GB", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        }),
-        timeGap,
-        totalTime: secondsToTime(totalSeconds),
-      };
+    const sanitizedItem = {
+      ...rest,
+      currentTime: new Date().toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
+      timeGap,
+      totalTime: secondsToTime(totalSeconds),
+    };
 
-      tempObj.data.push(sanitizedItem);
-      localStorage.setItem("temp_log", JSON.stringify(tempObj));
-      console.clear();
-      console.log("--- FULL TEMP LOG HISTORY ---");
-      const tableData = buildTableWithBreaks(tempObj.data);
-      console.table(tableData);
-      console.log(JSON.stringify(tempObj.data, null, 2));
+    tempObj.data.push(sanitizedItem);
+    localStorage.setItem("temp_log", JSON.stringify(tempObj));
+    console.clear();
+    console.log("--- FULL TEMP LOG HISTORY ---");
+    const tableData = buildTableWithBreaks(tempObj.data);
+    console.table(tableData);
+    console.log(JSON.stringify(tempObj.data, null, 2));
 
-    } else {
-      localStorage.removeItem('temp_log');
-    }
+    // const today = new Date().toDateString();
+    // const storedPunchInDate = localStorage.getItem('punchInDate');
+    // if (storedPunchInDate === today) {
+
+    // } else {
+    //   localStorage.removeItem('temp_log');
+    // }
   } catch (err) {
     console.error("Error in saveActivity:", err);
   }
